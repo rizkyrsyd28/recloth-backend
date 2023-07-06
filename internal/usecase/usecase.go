@@ -6,6 +6,7 @@ import (
 
 type Usecase interface {
 	AuthUsecase
+	ItemUsecase
 }
 
 type usecase struct {

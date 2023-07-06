@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/rizkyrsyd28/recloth-backend/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -27,13 +28,17 @@ func (r repo) GetAllItems(c *fiber.Ctx, page, limit int) ([]model.Item, error) {
 	}
 	defer cursor.Close(c.Context())
 
-	for cursor.Next(c.Context()) {
-		var item model.Item
-		if err := cursor.Decode(&item); err != nil {
-			return nil, err
-		}
-		result = append(result, item)
+	if err := cursor.All(c.Context(), &result); err != nil {
+		return nil, err
 	}
+
+	//for cursor.Next(c.Context()) {
+	//	var item model.Item
+	//	if err := cursor.Decode(&item); err != nil {
+	//		return nil, err
+	//	}
+	//	result = append(result, item)
+	//}
 
 	return result, nil
 }
@@ -43,9 +48,41 @@ func (r repo) GetItemById(c *fiber.Ctx, id string) (item model.Item, err error) 
 	_id, err := primitive.ObjectIDFromHex(id)
 
 	err = r.DB.Collection("items").FindOne(c.Context(),
-		bson.D{{
+		&bson.D{{
 			Key: "_id", Value: _id,
 		}}).Decode(&item)
 
 	return item, err
+}
+
+func (r repo) UpdateItemById(c *fiber.Ctx, id, attribute string, value interface{}) (err error) {
+
+	_id, err := primitive.ObjectIDFromHex(id)
+
+	_, err = r.DB.Collection("items").UpdateOne(c.Context(), bson.D{{"_id", _id}}, bson.D{{"$set", bson.D{{attribute, value}}}})
+
+	return err
+}
+
+func (r repo) DeleteItemById(c *fiber.Ctx, id string) (err error) {
+
+	_id, err := primitive.ObjectIDFromHex(id)
+
+	del, err := r.DB.Collection("items").DeleteOne(c.Context(),
+		bson.D{{
+			"_id", _id,
+		}})
+
+	if del.DeletedCount < 1 {
+		err = errors.New("items not found")
+	}
+
+	return err
+}
+
+func (r repo) PostItem(c *fiber.Ctx, item model.Item) (err error) {
+
+	_, err = r.DB.Collection("items").InsertOne(c.Context(), item)
+
+	return err
 }
