@@ -51,14 +51,14 @@ func Login(u usecase.Usecase) fiber.Handler {
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
 				c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-					"message": err.Error(),
+					"message": "username atau password tidak tepat",
 				})
-				return err
+				return nil
 			} else {
 				c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-					"message": err.Error(),
+					"messa ge": "password salah",
 				})
-				return err
+				return nil
 			}
 		}
 

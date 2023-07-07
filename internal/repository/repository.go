@@ -29,7 +29,7 @@ func NewRepo() repo {
 		log.Fatal("Error : " + err.Error())
 	}
 
-	db := c.Database("MyData")
+	db := c.Database(os.Getenv("DB_NAME"))
 
 	return repo{Client: c, DB: db}
 }

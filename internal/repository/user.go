@@ -23,14 +23,11 @@ func (r repo) GetUserByUsername(c *fiber.Ctx, username string) (user model.User,
 	return user, err
 }
 
-func (r repo) CreateUser(c *fiber.Ctx, user model.User) error {
+func (r repo) CreateUser(c *fiber.Ctx, user model.User) (err error) {
 
-	_, err := r.DB.Collection("users").InsertOne(c.Context(), user)
-	if err != nil {
-		return err
-	}
+	_, err = r.DB.Collection("users").InsertOne(c.Context(), user)
 
-	return nil
+	return err
 }
 
 func (r repo) DeleteUser(c *fiber.Ctx, username string) error {

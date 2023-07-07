@@ -27,11 +27,24 @@ func (u usecase) Register(c *fiber.Ctx, user model.User) error {
 	return nil
 }
 
-func (u usecase) Login(c *fiber.Ctx, username, password string) (cookie fiber.Cookie, err error) {
+func (u usecase) Login(c *fiber.Ctx, username, password string) (fiber.Cookie, error) {
+
+	cookie := fiber.Cookie{
+		Name:     "token",
+		Path:     "/",
+		Value:    "",
+		HTTPOnly: true,
+	}
 
 	user, err := u.repo.GetUserByUsername(c, username)
+	if err != nil {
+		return cookie, err
+	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return cookie, err
+	}
 
 	claims := &config.JWTClaim{
 		Username: user.Username,
@@ -44,6 +57,9 @@ func (u usecase) Login(c *fiber.Ctx, username, password string) (cookie fiber.Co
 	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	token, err := tokenAlgo.SignedString(config.JWT_KEY)
+	if err != nil {
+		return cookie, err
+	}
 
 	cookie = fiber.Cookie{
 		Name:     "token",

@@ -32,20 +32,15 @@ func (r repo) GetAllItems(c *fiber.Ctx, page, limit int) ([]model.Item, error) {
 		return nil, err
 	}
 
-	//for cursor.Next(c.Context()) {
-	//	var item model.Item
-	//	if err := cursor.Decode(&item); err != nil {
-	//		return nil, err
-	//	}
-	//	result = append(result, item)
-	//}
-
 	return result, nil
 }
 
 func (r repo) GetItemById(c *fiber.Ctx, id string) (item model.Item, err error) {
 
 	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return item, err
+	}
 
 	err = r.DB.Collection("items").FindOne(c.Context(),
 		&bson.D{{
@@ -55,11 +50,16 @@ func (r repo) GetItemById(c *fiber.Ctx, id string) (item model.Item, err error) 
 	return item, err
 }
 
+// UpdateItemById case sensitive, harus pas kalo mau update
 func (r repo) UpdateItemById(c *fiber.Ctx, id, attribute string, value interface{}) (err error) {
 
 	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
 
-	_, err = r.DB.Collection("items").UpdateOne(c.Context(), bson.D{{"_id", _id}}, bson.D{{"$set", bson.D{{attribute, value}}}})
+	opt := options.Update().SetUpsert(false)
+	_, err = r.DB.Collection("items").UpdateOne(c.Context(), bson.M{"_id": _id}, bson.M{"$set": bson.M{attribute: value}}, opt)
 
 	return err
 }
@@ -67,11 +67,17 @@ func (r repo) UpdateItemById(c *fiber.Ctx, id, attribute string, value interface
 func (r repo) DeleteItemById(c *fiber.Ctx, id string) (err error) {
 
 	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
 
 	del, err := r.DB.Collection("items").DeleteOne(c.Context(),
 		bson.D{{
 			"_id", _id,
 		}})
+	if err != nil {
+		return err
+	}
 
 	if del.DeletedCount < 1 {
 		err = errors.New("items not found")
