@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"github.com/rizkyrsyd28/recloth-backend/internal/delivery"
 	"log"
@@ -14,6 +15,8 @@ func main() {
 	}
 
 	f := fiber.New()
+
+	f.Use(cors.New())
 
 	delivery.MainRoutes(f)
 
