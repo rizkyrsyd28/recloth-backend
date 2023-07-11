@@ -12,6 +12,7 @@ import (
 type Repo interface {
 	UserRepo
 	ItemRepo
+	TransactionRepo
 }
 
 type repo struct {

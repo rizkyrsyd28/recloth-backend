@@ -7,3 +7,9 @@ type User struct {
 	Password string `json:"password" bson:"password"`
 	Balance  int    `json:"balance" bson:"balance"`
 }
+
+type PublicInfoUser struct {
+	Id       string `json:"id,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Username string `json:"username,omitempty"`
+}

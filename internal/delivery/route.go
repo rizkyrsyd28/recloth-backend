@@ -26,11 +26,18 @@ func AuthRoute(u usecase.Usecase) func(router fiber.Router) {
 
 func APIRoute(u usecase.Usecase) func(router fiber.Router) {
 	return func(api fiber.Router) {
+
 		api.Get("/products/:page", handler.GetItems(u))
 		api.Get("/product/:id", handler.GetItem(u))
+
 		productPro := api.Group("/product", middleware.JWTMiddleware())
 		productPro.Put("/:id", handler.UpdateItem(u))
 		productPro.Delete("/:id", handler.DeleteItem(u))
 		productPro.Post("/", handler.PostItem(u))
+
+		transaction := api.Group("/transaction", middleware.JWTMiddleware())
+		transaction.Get("/:id", handler.GetTransaction(u))
+		transaction.Post("/checkout", handler.Checkout(u))
+
 	}
 }

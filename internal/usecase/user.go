@@ -47,7 +47,11 @@ func (u usecase) Login(c *fiber.Ctx, username, password string) (fiber.Cookie, e
 	}
 
 	claims := &config.JWTClaim{
-		Username: user.Username,
+		UserInfo: model.PublicInfoUser{
+			Id:       user.Id,
+			Email:    user.Email,
+			Username: user.Username,
+		},
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    user.Id,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 3)),

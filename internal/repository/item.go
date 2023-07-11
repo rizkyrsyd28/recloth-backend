@@ -15,6 +15,7 @@ type ItemRepo interface {
 	UpdateItemById(c *fiber.Ctx, id, attribute string, value interface{}) error
 	DeleteItemById(c *fiber.Ctx, id string) error
 	PostItem(c *fiber.Ctx, item model.Item) error
+	DecreaseItemQuantity(c *fiber.Ctx, itemId string, count int) error
 }
 
 func (r repo) GetAllItems(c *fiber.Ctx, page, limit int) ([]model.Item, error) {
@@ -89,6 +90,20 @@ func (r repo) DeleteItemById(c *fiber.Ctx, id string) (err error) {
 func (r repo) PostItem(c *fiber.Ctx, item model.Item) (err error) {
 
 	_, err = r.DB.Collection("items").InsertOne(c.Context(), item)
+
+	return err
+}
+
+func (r repo) DecreaseItemQuantity(c *fiber.Ctx, itemId string, count int) (err error) {
+
+	_id, err := primitive.ObjectIDFromHex(itemId)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.DB.Collection("items").UpdateOne(c.Context(),
+		bson.M{"_id": _id},
+		bson.M{"$inc": bson.M{"quantity": -count}})
 
 	return err
 }

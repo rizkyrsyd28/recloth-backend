@@ -16,7 +16,9 @@ func main() {
 
 	f := fiber.New()
 
-	f.Use(cors.New())
+	f.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+	}))
 
 	delivery.MainRoutes(f)
 
