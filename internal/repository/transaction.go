@@ -16,7 +16,7 @@ func (r repo) GetTransactionByUserId(c *fiber.Ctx, userId string) ([]model.Trans
 
 	result := make([]model.Transaction, 0)
 
-	opt := options.Find().SetSort(bson.D{{"date", 0}})
+	opt := options.Find().SetSort(bson.D{{"date", -1}})
 	cursor, err := r.DB.Collection("transactions").Find(c.Context(),
 		bson.M{"user_id": userId}, opt)
 	if err != nil {

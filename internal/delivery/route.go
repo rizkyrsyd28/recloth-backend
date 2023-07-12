@@ -18,6 +18,7 @@ func MainRoutes(f *fiber.App) {
 
 func AuthRoute(u usecase.Usecase) func(router fiber.Router) {
 	return func(api fiber.Router) {
+		api.Get("/user-info", middleware.JWTMiddleware(), handler.UserInfo(u))
 		api.Post("/register", handler.Register(u))
 		api.Post("/login", handler.Login(u))
 		api.Post("/logout", handler.Logout(u))

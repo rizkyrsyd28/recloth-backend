@@ -16,7 +16,7 @@ func JWTMiddleware() fiber.Handler {
 			c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"message": err.Error(),
 			})
-			return err
+			return nil
 		}
 
 		claims := &config.JWTClaim{}
