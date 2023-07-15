@@ -47,7 +47,15 @@ func Checkout(u usecase.Usecase) fiber.Handler {
 func GetTransaction(u usecase.Usecase) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
-		userId := c.Params("id")
+		payload, err := helper.ParseJWTPayload(c)
+		if err != nil {
+			c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": err.Error(),
+			})
+			return nil
+		}
+
+		userId := payload.Id
 
 		data, err := u.GetTransactionByUserId(c, userId)
 		if err != nil {

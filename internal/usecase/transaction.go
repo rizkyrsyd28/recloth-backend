@@ -16,9 +16,11 @@ func (u usecase) GetTransactionByUserId(c *fiber.Ctx, userId string) ([]model.Tr
 
 func (u usecase) Checkout(c *fiber.Ctx, transaction model.Transaction) (err error) {
 
-	err = u.repo.DecreaseItemQuantity(c, transaction.ItemId, transaction.Quantity)
-	if err != nil {
-		return err
+	for _, itemId := range transaction.Items {
+		err = u.repo.DecreaseItemQuantity(c, itemId.ItemId, itemId.Quantity)
+		if err != nil {
+			return err
+		}
 	}
 
 	if err = u.repo.DecreaseBalance(c, transaction.UserId, transaction.Amount); err != nil {

@@ -13,4 +13,5 @@ type Item struct {
 	Location       string   `json:"location" bson:"location"`
 	Condition      string   `json:"condition" bson:"condition"`
 	OwnerId        string   `json:"owner_id,omitempty" bson:"owner_id,omitempty"`
+	OwnerName      string   `json:"owner_name" bson:"owner_name"`
 }

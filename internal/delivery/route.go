@@ -37,8 +37,12 @@ func APIRoute(u usecase.Usecase) func(router fiber.Router) {
 		productPro.Post("/", handler.PostItem(u))
 
 		transaction := api.Group("/transaction", middleware.JWTMiddleware())
-		transaction.Get("/:id", handler.GetTransaction(u))
+		transaction.Get("/", handler.GetTransaction(u))
 		transaction.Post("/checkout", handler.Checkout(u))
+
+		cart := api.Group("/cart", middleware.JWTMiddleware())
+		cart.Get("/", handler.GetCart(u))
+		cart.Put("/", handler.UpdateCart(u))
 
 	}
 }

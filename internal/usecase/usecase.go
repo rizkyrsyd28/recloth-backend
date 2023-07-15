@@ -8,6 +8,7 @@ type Usecase interface {
 	AuthUsecase
 	ItemUsecase
 	TransactionUsecase
+	CartUsecase
 }
 
 type usecase struct {

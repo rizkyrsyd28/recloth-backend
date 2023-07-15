@@ -10,21 +10,22 @@ import (
 )
 
 type AuthUsecase interface {
-	Register(c *fiber.Ctx, user model.User) error
+	Register(c *fiber.Ctx, user model.User) (string, error)
 	Login(c *fiber.Ctx, username, password string) (fiber.Cookie, error)
 	Logout(c *fiber.Ctx) (fiber.Cookie, error)
 }
 
-func (u usecase) Register(c *fiber.Ctx, user model.User) error {
+func (u usecase) Register(c *fiber.Ctx, user model.User) (id string, err error) {
 
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashPassword)
 
-	if err := u.repo.CreateUser(c, user); err != nil {
-		return err
+	id, err = u.repo.CreateUser(c, user)
+	if err != nil {
+		return id, err
 	}
 
-	return nil
+	return id, err
 }
 
 func (u usecase) Login(c *fiber.Ctx, username, password string) (fiber.Cookie, error) {
@@ -70,6 +71,8 @@ func (u usecase) Login(c *fiber.Ctx, username, password string) (fiber.Cookie, e
 		Path:     "/",
 		Value:    token,
 		HTTPOnly: true,
+		Secure:   true,
+		SameSite: "None",
 	}
 
 	return cookie, err
@@ -82,6 +85,7 @@ func (u usecase) Logout(c *fiber.Ctx) (cookie fiber.Cookie, err error) {
 		Path:     "/",
 		Value:    "",
 		HTTPOnly: true,
+		SameSite: "None",
 		MaxAge:   -1,
 	}
 

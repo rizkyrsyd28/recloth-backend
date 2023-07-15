@@ -13,6 +13,7 @@ type Repo interface {
 	UserRepo
 	ItemRepo
 	TransactionRepo
+	CartRepo
 }
 
 type repo struct {

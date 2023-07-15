@@ -10,7 +10,7 @@ import (
 
 type UserRepo interface {
 	GetUserByUsername(c *fiber.Ctx, username string) (model.User, error)
-	CreateUser(c *fiber.Ctx, user model.User) error
+	CreateUser(c *fiber.Ctx, user model.User) (string, error)
 	DeleteUser(c *fiber.Ctx, username string) error
 	DecreaseBalance(c *fiber.Ctx, userId string, amount int) error
 }
@@ -25,11 +25,16 @@ func (r repo) GetUserByUsername(c *fiber.Ctx, username string) (user model.User,
 	return user, err
 }
 
-func (r repo) CreateUser(c *fiber.Ctx, user model.User) (err error) {
+func (r repo) CreateUser(c *fiber.Ctx, user model.User) (id string, err error) {
 
-	_, err = r.DB.Collection("users").InsertOne(c.Context(), user)
+	ins, err := r.DB.Collection("users").InsertOne(c.Context(), user)
+	if err != nil {
+		return id, err
+	}
 
-	return err
+	id = ins.InsertedID.(primitive.ObjectID).Hex()
+
+	return id, err
 }
 
 func (r repo) DeleteUser(c *fiber.Ctx, username string) error {

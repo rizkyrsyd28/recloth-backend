@@ -16,12 +16,20 @@ func main() {
 
 	f := fiber.New()
 
-	f.Use(cors.New(cors.Config{
+	f.Use(func(c *fiber.Ctx) error {
+		c.Set("Access-Control-Allow-Credentials", "true")
+		return c.Next()
+	})
+
+	corsConf := cors.Config{
+		AllowOrigins: "http://localhost:5137",
+		//AllowMethods:     "GET, POST, HEAD, OPTIONS, PUT, DELETE, PATCH",
+		//AllowHeaders:     "Origin, Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With",
+		//ExposeHeaders:    "Origin",
 		AllowCredentials: true,
-		AllowOrigins:     "http://localhost:3000",
-		//AllowOrigins: "*",
-	}))
-	//f.Use(cors.New())
+	}
+
+	f.Use(cors.New(corsConf))
 
 	delivery.MainRoutes(f)
 

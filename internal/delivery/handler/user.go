@@ -21,11 +21,19 @@ func Register(u usecase.Usecase) fiber.Handler {
 			return err
 		}
 
-		if err := u.Register(c, userInput); err != nil {
+		id, err := u.Register(c, userInput)
+		if err != nil {
 			c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"message": err.Error(),
 			})
 			return err
+		}
+
+		if err := u.CreateCart(c, id); err != nil {
+			c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": err.Error(),
+			})
+			return nil
 		}
 
 		c.Status(fiber.StatusCreated).JSON(fiber.Map{
@@ -46,6 +54,19 @@ func Login(u usecase.Usecase) fiber.Handler {
 				"message": err.Error(),
 			})
 			return err
+		}
+
+		if userInput.Username == "" {
+			c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "username kosong !",
+			})
+			return nil
+		}
+		if userInput.Password == "" {
+			c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "password kosong !",
+			})
+			return nil
 		}
 
 		cookie, err := u.Login(c, userInput.Username, userInput.Password)
@@ -87,6 +108,7 @@ func Logout(u usecase.Usecase) fiber.Handler {
 		}
 
 		c.Cookie(&cookie)
+
 		c.Status(fiber.StatusNoContent).JSON(fiber.Map{
 			"message": "unauthorized",
 		})
