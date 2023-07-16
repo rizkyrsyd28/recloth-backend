@@ -72,9 +72,9 @@ func (u usecase) Login(c *fiber.Ctx, username, password string) (fiber.Cookie, e
 		Path:     "/",
 		Value:    token,
 		HTTPOnly: true,
-		// Domain:   "localhost",
+		Domain:   "localhost",
 		Secure:   true,
-		SameSite: "None",
+		// SameSite: "None",
 	}
 
 	return cookie, err
@@ -87,8 +87,8 @@ func (u usecase) Logout(c *fiber.Ctx) (cookie fiber.Cookie, err error) {
 		Path:     "/",
 		Value:    "",
 		HTTPOnly: true,
-		SameSite: "None",
-		// Domain:   "localhost",
+		// SameSite: "None",
+		Domain: "localhost",
 		MaxAge: -1,
 	}
 
