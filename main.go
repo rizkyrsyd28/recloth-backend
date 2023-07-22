@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"github.com/rizkyrsyd28/recloth-backend/internal/delivery"
-	"log"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 	})
 
 	corsConf := cors.Config{
-		AllowOrigins: "http://localhost:5137",
+		AllowOrigins: "http://localhost:5137, https://recloth.vercel.app",
 		//AllowMethods:     "GET, POST, HEAD, OPTIONS, PUT, DELETE, PATCH",
 		//AllowHeaders:     "Origin, Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With",
 		//ExposeHeaders:    "Origin",
