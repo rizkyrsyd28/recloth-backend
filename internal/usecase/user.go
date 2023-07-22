@@ -1,12 +1,13 @@
 package usecase
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/rizkyrsyd28/recloth-backend/internal/config"
 	"github.com/rizkyrsyd28/recloth-backend/internal/model"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 type AuthUsecase interface {
@@ -71,7 +72,7 @@ func (u usecase) Login(c *fiber.Ctx, username, password string) (fiber.Cookie, e
 		Path:     "/",
 		Value:    token,
 		HTTPOnly: true,
-		Domain:   "localhost",
+		Domain:   "reclothserver.azurewebsites.net",
 		Secure:   true,
 		SameSite: "None",
 	}
@@ -87,7 +88,7 @@ func (u usecase) Logout(c *fiber.Ctx) (cookie fiber.Cookie, err error) {
 		Value:    "",
 		HTTPOnly: true,
 		SameSite: "None",
-		Domain:   "localhost",
+		Domain:   "reclothserver.azurewebsites.net",
 		MaxAge:   -1,
 	}
 
