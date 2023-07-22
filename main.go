@@ -29,6 +29,7 @@ func main() {
 		//AllowHeaders:     "Origin, Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With",
 		//ExposeHeaders:    "Origin",
 		AllowCredentials: true,
+		//
 	}
 
 	f.Use(cors.New(corsConf))
