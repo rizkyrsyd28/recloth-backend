@@ -23,10 +23,10 @@ func main() {
 	})
 
 	corsConf := cors.Config{
-		AllowOrigins: "https://recloth.vercel.app",
+		AllowOrigins: "http://localhost:5137, https://recloth.vercel.app/",
 		//AllowMethods:     "GET, POST, HEAD, OPTIONS, PUT, DELETE, PATCH",
 		//AllowHeaders:     "Origin, Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With",
-		//ExposeHeaders:    "Origin"
+		//ExposeHeaders:    "Origin",
 		AllowCredentials: true,
 	}
 
