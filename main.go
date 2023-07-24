@@ -19,7 +19,7 @@ func main() {
 
 	f.Use(func(c *fiber.Ctx) error {
 		c.Set("Access-Control-Allow-Credentials", "true")
-		c.Set("Access-Control-Allow-Origin", "https://recloth.vercel.app")
+		// c.Set("Access-Control-Allow-Origin", "https://recloth.vercel.app")
 		return c.Next()
 	})
 
