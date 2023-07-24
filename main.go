@@ -19,13 +19,13 @@ func main() {
 
 	f.Use(func(c *fiber.Ctx) error {
 		c.Set("Access-Control-Allow-Credentials", "true")
-		// c.Set("Access-Control-Allow-Origin", "https://recloth.vercel.app")
+		c.Set("Access-Control-Allow-Origin", "https://recloth.vercel.app")
 		return c.Next()
 	})
 
 	corsConf := cors.Config{
 		// AllowOrigins: "http://localhost:5137, https://recloth.vercel.app",
-		AllowOrigins: "https://recloth.vercel.app",
+		AllowOrigins: "http://localhost:5137",
 		//AllowMethods:     "GET, POST, HEAD, OPTIONS, PUT, DELETE, PATCH",
 		//AllowHeaders:     "Origin, Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With",
 		//ExposeHeaders:    "Origin",
